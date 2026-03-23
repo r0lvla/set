@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>SET Map</title>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
+<style>*{margin:0;padding:0}body{background:#000;display:flex;align-items:center;justify-content:center;height:100vh;overflow:hidden}
+canvas{display:block;cursor:grab}canvas:active{cursor:grabbing}
+</style></head><body>
+<canvas id="c"></canvas>
+<script>
+var CL=[
+  {n:"AMERICA",c:"#0083FA",co:["USA","CAN","MEX"],
+   rx:["US-PR","US-VI"]},
+  {n:"PERESVET",c:"#992020",co:["BRA","ARG","CHL","URY","PRY","BOL","PER","ECU","VEN","FLK","GUY","SUR","BLZ","HND","GTM","SLV","NIC","CRI","PAN","JAM","CUB","DOM","HTI","COL","TTO","GUF","GRD","LCA","VCT","KNA","ATG","DMA","BRB","BHS"],
+   ro:["FR-GF","US-PR","US-VI","FR-GP","FR-MQ"]},
+  {n:"ALLIANCE",c:"#00B7D6",co:["GBR","IRL","ISL","NOR","SWE","FIN","DNK","GRL","FRA","DEU","NLD","BEL","LUX","CHE","AUT","POL","CZE","SVK","HUN","HRV","BIH","MNE","SVN","MKD","ALB","GRC","PRT","ESP","AND","MLT","SMR","VAT","MCO","LIE","ITA"],
+   ro:["RU-MUR"],rx:["FR-YT","FR-GF","FR-GP","FR-MQ"],
+   lb:[{n:"Nord of Alliance",co:["GRL","ISL"]},{n:"Alliance",co:["DEU"]}]},
+  {n:"RUS",c:"#992020",co:["RUS","UKR","BLR","EST","LVA","LTU","BGR","ROU","MDA","SRB"],
+   rx:["RU-MUR","RU-KAM","RU-MAG","RU-KHA","RU-PRI","RU-AMU","RU-SAK","RU-YEV"]},
+  {n:"ZEN",c:"#FFE135",co:["CHN","MNG","TWN","VNM","THA","MMR","LAO","KHM","KAZ"]},
+  {n:"HINDUSH",c:"#FF7400",co:["IND","PAK","BGD","NPL","BTN","LKA","IDN","MYS","PHL","AUS","NZL","FJI","PNG","NCL","VUT","SLB","BRN","SGP","TLS"],
+   lb:[{n:"Bharat",co:["IND"]},{n:"Hindush",co:["AUS"]}]},
+  {n:"ORIGIN",c:"#00C655",co:["DZA","LBY","TUN","MAR","MRT","MLI","NER","TCD","SDN","SSD","ERI","DJI","SOM","ETH","KEN","UGA","TZA","RWA","BDI","COD","COG","CMR","NGA","GHA","CIV","SEN","GIN","GNB","BFA","TGO","BEN","CAF","GAB","GNQ","AGO","MOZ","MWI","ZMB","ZWE","BWA","NAM","ZAF","SWZ","LSO","MDG","ESH","SLE","LBR","GMB","MUS","COM","SYC","REU"],
+   ro:["FR-YT"]},
+  {n:"KISMET",c:"#FF469D",co:["SAU","ARE","QAT","BHR","KWT","OMN","YEM","IRQ","IRN","SYR","JOR","LBN","ISR","PSE","TUR","GEO","ARM","AZE","CYP","AFG","TKM","UZB","TJK","EGY"]},
+  {n:"RISING",c:"#FF0000",co:["JPN","KOR","PRK"],
+   ro:["RU-KAM","RU-MAG","RU-KHA","RU-PRI","RU-AMU","RU-SAK","RU-YEV"]}
+];
+var KOSOVO=/*__KOSOVO__*/null/*__END__*/;
+var OCEAN=/*__OCEAN__*/null/*__END__*/;
+var LAKES=/*__LAKES__*/null/*__END__*/;
+var cv=document.getElementById("c"),cx=cv.getContext("2d"),sc=1,ox=0,oy=0,isP=false,lx=0,ly=0;
+var features=null;
+function init(topo){
+  features=topojson.feature(topo,topo.objects.globalADM1).features;
+  resize();
+}
+function pr(lon,lat,W){return[(lon+180)/360*W,(640/2)-(W*Math.log(Math.tan(Math.PI/4+lat*Math.PI/180/2)))/(2*Math.PI)]}
+function getGroup(p){
+  var sg=p.shapeGroup||"",si=p.shapeISO||"";
+  // First pass: check added regions (ro) — these override everything
+  for(var i=0;i<CL.length;i++){
+    var cl=CL[i];
+    if(cl.ro){for(var r=0;r<cl.ro.length;r++){if(si===cl.ro[r])return cl}}
+  }
+  // Second pass: check countries, but skip removed regions (rx)
+  for(var i=0;i<CL.length;i++){
+    var cl=CL[i];
+    var skip=false;
+    if(cl.rx){for(var r=0;r<cl.rx.length;r++){if(si===cl.rx[r]){skip=true;break}}}
+    if(skip)continue;
+    for(var j=0;j<cl.co.length;j++){if(sg===cl.co[j])return cl}
+  }
+  return null;
+}
+function ap(g,W){if(!g)return;var ps=g.type==="MultiPolygon"?g.coordinates:[g.coordinates];for(var p=0;p<ps.length;p++)for(var r=0;r<ps[p].length;r++)for(var i=0;i<ps[p][r].length;i++){var pt=pr(ps[p][r][i][0],ps[p][r][i][1],W);i===0?cx.moveTo(pt[0],pt[1]):cx.lineTo(pt[0],pt[1])}}
+function apBuf(g,W,buf){if(!g)return;var ps=g.type==="MultiPolygon"?g.coordinates:[g.coordinates];for(var p=0;p<ps.length;p++)for(var r=0;r<ps[p].length;r++){var ring=ps[p][r];var cX=0,cY=0;for(var i=0;i<ring.length;i++){var pt=pr(ring[i][0],ring[i][1],W);cX+=pt[0];cY+=pt[1]}cX/=ring.length;cY/=ring.length;for(var i=0;i<ring.length;i++){var pt=pr(ring[i][0],ring[i][1],W);var dx=pt[0]-cX,dy=pt[1]-cY;var d=Math.sqrt(dx*dx+dy*dy);var nx=d>0?dx/d:0,ny=d>0?dy/d:0;i===0?cx.moveTo(pt[0]+nx*buf,pt[1]+ny*buf):cx.lineTo(pt[0]+nx*buf,pt[1]+ny*buf)}}}
+function resize(){cv.width=window.innerWidth;cv.height=window.innerHeight;render()}
+function render(){
+  var W=cv.width,H=cv.height;cx.fillStyle="#000";cx.fillRect(0,0,W,H);
+  cx.save();cx.translate(ox,oy);cx.scale(sc,sc);
+  if(OCEAN){for(var o=0;o<OCEAN.features.length;o++){cx.beginPath();ap(OCEAN.features[o].geometry,W);cx.fillStyle="#000";cx.fill()}}
+  if(LAKES){for(var l=0;l<LAKES.features.length;l++){cx.beginPath();ap(LAKES.features[l].geometry,W);cx.fillStyle="#000";cx.fill()}}
+  for(var c=0;c<CL.length;c++){cx.beginPath();for(var f=0;f<features.length;f++){var g=getGroup(features[f].properties);if(g!==CL[c])continue;ap(features[f].geometry,W)}cx.fillStyle=CL[c].c;cx.fill()}
+  cx.beginPath();for(var f=0;f<features.length;f++){var g=getGroup(features[f].properties);if(g)continue;ap(features[f].geometry,W)}cx.fillStyle="#1a1a1a";cx.fill();
+  if(KOSOVO){cx.beginPath();apBuf(KOSOVO,W,3);cx.fillStyle="#992020";cx.fill()}
+  // Labels
+  function drawLabel(text,lx,ly,fs){text=text.toUpperCase();cx.font="900 "+fs+"px 'Arial Black',Arial,sans-serif";cx.textAlign="center";cx.textBaseline="middle";cx.fillStyle="rgba(0,0,0,0.7)";cx.fillText(text,lx+1,ly+1);cx.fillStyle="#fff";cx.fillText(text,lx,ly)}
+  function centroidFor(filter){var ax=0,ay=0,at=0;for(var f=0;f<features.length;f++){var g=getGroup(features[f].properties);if(!g||!filter(g,features[f].properties))continue;var geo=features[f].geometry;if(!geo||!geo.coordinates)continue;var ps=geo.type==="MultiPolygon"?geo.coordinates:[geo.coordinates];for(var p=0;p<ps.length;p++){var ring=ps[p][0];if(!ring||ring.length<3)continue;var ca=0,ccx=0,ccy=0;for(var i=0,j=ring.length-1;i<ring.length;j=i++){var pi=pr(ring[i][0],ring[i][1],W),pj=pr(ring[j][0],ring[j][1],W);var cross=pi[0]*pj[1]-pj[0]*pi[1];ca+=cross;ccx+=(pi[0]+pj[0])*cross;ccy+=(pi[1]+pj[1])*cross}ca/=2;if(Math.abs(ca)<0.001)continue;var area=-ca;ccx/=(6*ca);ccy/=(6*ca);ax+=ccx*area;ay+=ccy*area;at+=area}}return at>0?{x:ax/at,y:ay/at}:null}
+  for(var c=0;c<CL.length;c++){var cl=CL[c];var fs=Math.max(8,Math.min(20,14/sc));
+    if(cl.lb){var usedCo={};for(var li=0;li<cl.lb.length;li++){var lb=cl.lb[li];var lco=lb.co||[];for(var ci=0;ci<lco.length;ci++)usedCo[lco[ci]]=1;var pt;if(lb.lon!=null)pt=pr(lb.lon,lb.lat,W);else pt=centroidFor(function(g,p){if(g!==cl)return false;var iso=p.shapeGroup||'';if(lco.length)return lco.indexOf(iso)>=0;return !usedCo[iso]});if(pt)drawLabel(lb.n,pt.x,pt.y,fs)}}
+    else{var pt;if(cl.lon!=null)pt=pr(cl.lon,cl.lat,W);else pt=centroidFor(function(g){return g===cl});if(pt)drawLabel(cl.n,pt.x,pt.y,fs)}}
+  cx.restore();
+}
+cv.addEventListener("wheel",function(e){e.preventDefault();var r=cv.getBoundingClientRect(),mx=e.clientX-r.left,my=e.clientY-r.top,os=sc;sc*=e.deltaY<0?1.15:1/1.15;sc=Math.max(0.2,Math.min(30,sc));ox=mx-(mx-ox)*(sc/os);oy=my-(my-oy)*(sc/os);render()});
+cv.addEventListener("mousedown",function(e){isP=true;lx=e.clientX;ly=e.clientY});
+cv.addEventListener("mousemove",function(e){if(!isP)return;ox+=e.clientX-lx;oy+=e.clientY-ly;lx=e.clientX;ly=e.clientY;render()});
+cv.addEventListener("mouseup",function(){isP=false});
+window.addEventListener("resize",resize);
+fetch("data.js?t="+Date.now()).then(r=>r.text()).then(t=>{eval(t);init(TOPO)});
+</script></body></html>
