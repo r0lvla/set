@@ -1,0 +1,40 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>FET - Mars</title><style>*{margin:0;padding:0}body{background:#000;overflow:hidden}canvas{display:block;cursor:grab}canvas:active{cursor:grabbing}</style></head><body><canvas id="c"></canvas><script>
+var cv=document.getElementById("c"),cx=cv.getContext("2d");
+var sc=1,ox=0,oy=0,isP=false,lx=0,ly=0;
+var MR=860;
+function resize(){cv.width=window.innerWidth;cv.height=window.innerHeight;render()}
+function render(){
+  var W=cv.width,H=cv.height;
+  cx.fillStyle="#000";
+  cx.fillRect(0,0,W,H);
+  cx.save();
+  cx.translate(ox,oy);
+  cx.scale(sc,sc);
+  // Mars base
+  cx.beginPath();cx.arc(MR,MR,MR,0,Math.PI*2);cx.fillStyle="#8B0000";cx.fill();
+  // Clip
+  cx.save();cx.beginPath();cx.arc(MR,MR,MR,0,Math.PI*2);cx.clip();
+  // Black rectangle - right upper quadrant
+  cx.fillStyle="#000";
+  cx.fillRect(MR*1.05,MR*0.35,MR*0.375,MR*0.275);
+  // Limb
+  var grad=cx.createRadialGradient(MR,MR,MR*0.5,MR,MR,MR);
+  grad.addColorStop(0,"rgba(0,0,0,0)");grad.addColorStop(0.75,"rgba(0,0,0,0)");grad.addColorStop(1,"rgba(0,0,0,0.5)");
+  cx.fillStyle=grad;cx.fillRect(0,0,MR*2,MR*2);
+  cx.restore();
+  // Edge
+  cx.beginPath();cx.arc(MR,MR,MR+1,0,Math.PI*2);cx.strokeStyle="rgba(255,255,255,0.1)";cx.lineWidth=1;cx.stroke();
+  // Label
+  var fs=Math.max(16,Math.min(60,40/sc));
+  cx.font="900 "+fs+"px 'Arial Black',Arial,sans-serif";cx.textAlign="center";cx.textBaseline="middle";
+  cx.fillStyle="rgba(0,0,0,0.7)";cx.fillText("THRESHOLD",MR*1.24+1,MR*0.49+1);cx.fillStyle="#fff";cx.fillText("THRESHOLD",MR*1.24,MR*0.49);
+  cx.restore();
+}
+cv.addEventListener("wheel",function(e){e.preventDefault();var r=cv.getBoundingClientRect(),mx=e.clientX-r.left,my=e.clientY-r.top,os=sc;sc*=e.deltaY<0?1.15:1/1.15;sc=Math.max(0.2,Math.min(10,sc));ox=mx-(mx-ox)*(sc/os);oy=my-(my-oy)*(sc/os);render()});
+cv.addEventListener("mousedown",function(e){isP=true;lx=e.clientX;ly=e.clientY});
+cv.addEventListener("mousemove",function(e){if(!isP)return;ox+=e.clientX-lx;oy+=e.clientY-ly;lx=e.clientX;ly=e.clientY;render()});
+cv.addEventListener("mouseup",function(){isP=false});
+window.addEventListener("resize",resize);
+resize();
+ox=cv.width/2-MR*sc;oy=cv.height/2-MR*sc;render();
+</script></body></html>
