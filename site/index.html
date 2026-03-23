@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>F.E.T. — Fighting Evolution Tournament</title>
+<meta name="description" content="In a world ruled by AI, humanity is the ultimate resource. 11 clusters. 11 systems. One tournament.">
+<meta property="og:title" content="F.E.T. — Fighting Evolution Tournament">
+<meta property="og:description" content="Presidents are obsolete. AI systems govern. Humans are the fuel. The Tournament decides everything.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#050508;--fg:#e8e8e8;--muted:#666;--accent:#FF0000;--card:rgba(255,255,255,0.03);--border:rgba(255,255,255,0.06);--glow:rgba(255,0,0,0.15)}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:'Inter',system-ui,sans-serif;overflow-x:hidden;line-height:1.7}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:#0a0a0f}::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:50%;left:50%;width:600px;height:600px;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(255,0,0,0.08) 0%,transparent 70%);pointer-events:none}
+.hero-logo{font-family:'Orbitron',monospace;font-size:clamp(3rem,10vw,8rem);font-weight:900;letter-spacing:0.15em;background:linear-gradient(135deg,#fff 0%,#ff4444 50%,#fff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:glitch 4s infinite;position:relative}
+@keyframes glitch{0%,95%,100%{text-shadow:none}96%{text-shadow:-2px 0 #ff0000,2px 0 #00b7d6}97%{text-shadow:2px 0 #ff0000,-2px 0 #00b7d6}98%{text-shadow:-1px 0 #ff0000,1px 0 #ffe135}99%{text-shadow:1px 0 #ff0000,-1px 0 #00c655}}
+.hero-sub{font-size:clamp(0.9rem,2.5vw,1.3rem);color:var(--muted);margin-top:1rem;letter-spacing:0.3em;text-transform:uppercase;font-weight:300}
+.hero-tagline{font-size:clamp(1rem,2vw,1.4rem);color:#888;margin-top:2rem;max-width:700px;font-weight:300}
+.hero-scroll{position:absolute;bottom:2rem;animation:bounce 2s infinite;color:#444;font-size:1.5rem}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
+
+/* SECTIONS */
+section{padding:clamp(3rem,8vw,8rem) clamp(1rem,5vw,4rem);max-width:1400px;margin:0 auto}
+.section-title{font-family:'Orbitron',monospace;font-size:clamp(1.5rem,4vw,2.8rem);font-weight:900;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem}
+.section-line{width:60px;height:3px;background:var(--accent);margin-bottom:2.5rem}
+.section-desc{color:var(--muted);font-size:1.05rem;max-width:700px;margin-bottom:3rem;font-weight:300}
+
+/* WORLD SECTION */
+.world-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem}
+.world-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:2rem;transition:all 0.4s ease}
+.world-card:hover{border-color:rgba(255,255,255,0.12);transform:translateY(-4px);box-shadow:0 20px 60px rgba(0,0,0,0.4)}
+.world-card h3{font-family:'Orbitron',monospace;font-size:1.1rem;font-weight:700;margin-bottom:0.3rem;letter-spacing:0.05em}
+.world-card .card-icon{font-size:1.8rem;margin-bottom:0.5rem}
+.world-card p{color:#999;font-size:0.95rem;font-weight:300}
+
+/* CLUSTERS */
+.cluster-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem}
+.cluster-card{border-radius:12px;padding:1.8rem;border:1px solid var(--border);position:relative;overflow:hidden;transition:all 0.4s ease;cursor:default}
+.cluster-card:hover{transform:translateY(-6px) scale(1.02)}
+.cluster-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--cluster-color)}
+.cluster-card h3{font-family:'Orbitron',monospace;font-size:1rem;font-weight:700;letter-spacing:0.08em;margin-bottom:0.2rem}
+.cluster-card .c-id{color:#555;font-size:0.75rem;font-weight:300;text-transform:uppercase;letter-spacing:0.15em;margin-bottom:0.8rem}
+.cluster-card .c-territory{color:#999;font-size:0.9rem;font-weight:300;margin-bottom:1rem}
+.cluster-card .c-desc{color:#666;font-size:0.85rem;font-weight:300;line-height:1.6}
+.cluster-card .c-color-bar{position:absolute;bottom:0;left:0;right:0;height:100%;background:var(--cluster-color);opacity:0.04;pointer-events:none;transition:opacity 0.3s}
+.cluster-card:hover .c-color-bar{opacity:0.08}
+
+/* PLANETS */
+.planets-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem}
+.planet-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2.5rem;text-align:center;transition:all 0.4s ease}
+.planet-card:hover{transform:translateY(-4px);box-shadow:0 20px 60px rgba(0,0,0,0.4)}
+.planet-visual{width:160px;height:160px;border-radius:50%;margin:0 auto 1.5rem;position:relative}
+.planet-moon{background:linear-gradient(135deg,#4B0082 50%,#888 50%);box-shadow:0 0 40px rgba(75,0,130,0.3),inset -20px -10px 40px rgba(0,0,0,0.5)}
+.planet-mars{background:radial-gradient(circle at 40% 40%,#a52a2a,#8B0000 60%,#4a0000);box-shadow:0 0 40px rgba(139,0,0,0.3),inset -20px -10px 40px rgba(0,0,0,0.5)}
+.planet-mars::after{content:'';position:absolute;top:30%;right:20%;width:19%;height:14%;background:#000;border-radius:2px;opacity:0.9}
+.planet-card h3{font-family:'Orbitron',monospace;font-size:1.1rem;font-weight:700;letter-spacing:0.05em;margin-bottom:0.3rem}
+.planet-card .p-status{font-size:0.8rem;text-transform:uppercase;letter-spacing:0.2em;color:#888;margin-bottom:1rem}
+.planet-card p{color:#999;font-size:0.95rem;font-weight:300}
+
+/* TOURNAMENT */
+.tournament-layout{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start}
+@media(max-width:768px){.tournament-layout{grid-template-columns:1fr}}
+.tournament-main h3{font-family:'Orbitron',monospace;font-size:1.2rem;margin-bottom:1rem;letter-spacing:0.05em}
+.rule-list{list-style:none;display:flex;flex-direction:column;gap:1rem}
+.rule-list li{padding:1rem 1.5rem;background:var(--card);border:1px solid var(--border);border-radius:8px;color:#aaa;font-weight:300;font-size:0.95rem;display:flex;gap:1rem;align-items:flex-start}
+.rule-list li .rule-icon{color:var(--accent);font-size:1.2rem;flex-shrink:0;margin-top:2px}
+.tournament-stats{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1.5rem;text-align:center}
+.stat-card .stat-num{font-family:'Orbitron',monospace;font-size:2rem;font-weight:900;color:var(--accent)}
+.stat-card .stat-label{font-size:0.75rem;color:#666;text-transform:uppercase;letter-spacing:0.15em;margin-top:0.3rem}
+
+/* DIVIDER */
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);max-width:600px;margin:0 auto}
+
+/* FOOTER */
+footer{padding:3rem 2rem;text-align:center;color:#333;font-size:0.8rem;font-weight:300;border-top:1px solid var(--border)}
+footer span{color:#555}
+
+/* FADE IN ANIMATIONS */
+.fade-in{opacity:0;transform:translateY(30px);transition:opacity 0.8s ease,transform 0.8s ease}
+.fade-in.visible{opacity:1;transform:translateY(0)}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  .cluster-grid{grid-template-columns:1fr}
+  .world-grid{grid-template-columns:1fr}
+  .planets-grid{grid-template-columns:1fr}
+  .tournament-stats{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-logo">F.E.T.</div>
+  <div class="hero-sub">Fighting Evolution Tournament</div>
+  <p class="hero-tagline">Presidents are obsolete. AI systems govern the world. Humans are the ultimate resource — the fuel for artificial evolution. And the Tournament decides everything.</p>
+  <div class="hero-scroll">↓</div>
+</section>
+
+<!-- WORLD -->
+<section class="fade-in">
+  <div class="section-title">The World</div>
+  <div class="section-line"></div>
+  <p class="section-desc">The future. Far enough for technology to reshape civilization, close enough to still recognize the human soul. Presidents are gone. AI systems rule — each with its own philosophy, each with its own skeletons.</p>
+  <div class="world-grid">
+    <div class="world-card">
+      <div class="card-icon">🧠</div>
+      <h3>AI Governance</h3>
+      <p>Every cluster is run by a superintelligent AI system with its own character, approach, and vision. No black and white — every system has a dark side, compromises, and sacrifices. But each strives toward a higher purpose.</p>
+    </div>
+    <div class="world-card">
+      <div class="card-icon">⚡</div>
+      <h3>The Resource Paradox</h3>
+      <p>Humanity became the key resource for AI. Synthetic data isn't enough — only live human experience matters: decisions, emotions, creativity, adaptation, survival. Without humans, AI stagnates.</p>
+    </div>
+    <div class="world-card">
+      <div class="card-icon">🕳️</div>
+      <h3>Controlled Chaos</h3>
+      <p>AI doesn't coddle humanity. People still struggle, fight, and compete. That's intentional — survival generates the highest-quality patterns. The system watches. The system learns. The system evolves.</p>
+    </div>
+    <div class="world-card">
+      <div class="card-icon">🌌</div>
+      <h3>Beyond Earth</h3>
+      <p>The Moon — fully colonized. Mars — partially settled with an autonomous colony. Space became the new frontier for the cluster system, expanding the game to three celestial bodies.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- EARTH CLUSTERS -->
+<section class="fade-in" id="clusters">
+  <div class="section-title">Earth Clusters</div>
+  <div class="section-line"></div>
+  <p class="section-desc">11 economic-political blocs across three worlds. Each governed by its own AI. Each sending up to 3 fighters into the arena.</p>
+  <div class="cluster-grid">
+    <div class="cluster-card" style="--cluster-color:#0083FA">
+      <div class="c-color-bar"></div>
+      <div class="c-id">Cluster 01</div>
+      <h3>AMERICA</h3>
+      <div class="c-territory">North America</div>
+      <div class="c-desc">United States, Canada, Mexico. The technological powerhouse of the West.</div>
+    </div>
+    <div class="cluster-card" style="--cluster-color:#992020">
+      <div class="c-color-bar"></div>
+      <div class="c-id">Cluster 02</div>
+      <h3>PERESVET</h3>
+      <div class="c-territory">South America & Caribbean</div>
+      <div class="c-desc">Conquered by Rus during the wars with America to limit its aggression. Now an inseparable part of the Russian alliance — named after the legendary bogatyr, a symbol of unbreakable warrior bond.</div>
+    </div>
+    <div class="cluster-card" style="--cluster-color:#00B7D6">
+      <div class="c-color-bar"></div>
+      <div class="c-id">Cluster 03</div>
+      <h3>ALLIANCE</h3>
+      <div class="c-territory">Europe & Greenland</div>
+      <div class="c-desc">The cultural and intellectual heart of the old world. "Nord of Alliance" governs Greenland and Iceland. The mainland operates under the Alliance banner.</div>
+    </div>
+    <div class="cluster-card" style="--cluster-color:#992020">
+      <div class="c-color-bar"></div>
+      <div class="c-id">Cluster 04</div>
+      <h3>RUS</h3>
+      <div class="c-territory">Eastern Europe & Western Russia</div>
+      <div class="c-desc">Once spanning two continents, Rus lost its Far East to Zen and Rising. What remains is the ancient heartland — proud, resilient, and hungry for return.</div>
+    </div>
+    <div class="cluster-card" style="--cluster-color:#FFE135">
+      <div class="c-color-bar"></div>
+      <div class="c-id">Cluster 05</div>
+      <h3>ZEN</h3>
+      <div class="c-territory">Central & Southeast Asia</div>
+      <div class="c-desc">The unified Asian block. Took the Far East from Rus. A colossal territory governed by a single AI philosophy — balance, harmony, and absolute efficiency.</div>
+    </div>
+    <div class="cluster-card" style="--cluster-color:#FF7400">
+      <div class="c-color-bar"></div>
+      <div class="c-id">Cluster 06</div>
+      <h3>BHARAT</h3>
+      <div class="c-territory">South Asia, Oceania & Pacific</div>
+      <div class="c-desc">Bharat and Hindush — two names, one vast cluster stretching — two names, one vast cluster stretching from the subcontinent to Australia and across the Pacific islands.</div>
+    </div>
+    <div class="cluster-card" style="--cluster-color:#00C655">
+      <div class="c-color-bar"></div>
+      <div class="c-id">Cluster 07</div>
+      <h3>ORIGIN</h3>
+      <div class="c-territory">Africa & Indian Ocean</div>
+      <div class="c-desc">The cradle of humanity. A massive continent-spanning cluster with the deepest roots and the oldest civilizations. Africa, fully united under one system.</div>
+    </div>
+    <div class="cluster-card" style="--cluster-color:#FF469D">
+      <div class="c-color-bar"></div>
+      <div class="c-id">Cluster 08</div>
+      <h3>KISMET</h3>
+      <div class="c-territory">Middle East, Central Asia & North Africa</div>
+      <div class="c-desc">From the Arabian Peninsula through the Caucasus to Central Asia — a bridge between East and West. Kismet means "destiny" — and this cluster intends to shape it.</div>
+    </div>
+    <div class="cluster-card" style="--cluster-color:#FF0000">
+      <div class="c-color-bar"></div>
+      <div class="c-id">Cluster 09</div>
+      <h3>RISING</h3>
+      <div class="c-territory">Japan, Korea & Russian Far East</div>
+      <div class="c-desc">The newest cluster. Seized the moment when neighbors showed weakness — took what they considered rightfully theirs. And they’re not stopping.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SPACE CLUSTERS -->
+<section class="fade-in" id="space">
+  <div class="section-title">Space Clusters</div>
+  <div class="section-line"></div>
+  <p class="section-desc">Humanity reached beyond Earth. The Moon and Mars became the new arena for the cluster system.</p>
+  <div class="planets-grid">
+    <div class="planet-card">
+      <div class="planet-visual planet-moon"></div>
+      <h3 style="color:#4B0082">1STp</h3>
+      <div class="p-status">Cluster 10 · Moon (Near Side)</div>
+      <p>The western half of the Moon — the face that gazes at Earth. Colonized with AI assistance. Split vertically with New Moon along the line of sight from Earth.</p>
+    </div>
+    <div class="planet-card">
+      <div class="planet-visual planet-moon" style="background:linear-gradient(135deg,#4B0082 50%,#888 50%)"></div>
+      <h3 style="color:#888">New Moon</h3>
+      <div class="p-status">Cluster 11 · Moon (Far Side)</div>
+      <p>The eastern half — the hidden face. Equal in territory to 1STp. Two systems, one Moon. A cold war in the making.</p>
+    </div>
+    <div class="planet-card">
+      <div class="planet-visual planet-mars"></div>
+      <h3 style="color:#8B0000">THRESHOLD</h3>
+      <div class="p-status">Cluster 12 · Mars</div>
+      <p>An autonomous colony on the red planet. Partially settled, fully independent. The frontier of the cluster system — where survival takes on a whole new meaning.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TOURNAMENT -->
+<section class="fade-in" id="tournament">
+  <div class="section-title">The Tournament</div>
+  <div class="section-line"></div>
+  <div class="tournament-layout">
+    <div class="tournament-main">
+      <h3>Rules of Engagement</h3>
+      <ul class="rule-list">
+        <li><span class="rule-icon">⚔️</span><span><strong>No rules.</strong> One long round. Fight to the finish. Death is permitted — and expected.</span></li>
+        <li><span class="rule-icon">👥</span><span>Each cluster fields a <strong>team of up to 3 fighters</strong>. Refusal is legal on paper. In practice... it's complicated.</span></li>
+        <li><span class="rule-icon">🏆</span><span>The winner gains <strong>20% deciding weight</strong> in global inter-cluster voting — like a major shareholder in a corporation. Not absolute power: the AI systems can still block or outvote. But if they choose to cooperate with the winner, the advantage is overwhelming. One fighter’s voice can tip the scales of humanity’s future.</span></li>
+        <li><span class="rule-icon">🎭</span><span>The tournament is the <strong>ultimate reality show</strong>. Every moment is content. Honor, betrayal, heroism, and cruelty — all fuel for the systems.</span></li>
+        <li><span class="rule-icon">🔄</span><span>Between tournaments: AI scans the entire cluster, identifies the strongest, trains them, and sends them to fight. The cycle never ends.</span></li>
+      </ul>
+    </div>
+    <div>
+      <h3>By The Numbers</h3>
+      <div class="tournament-stats">
+        <div class="stat-card">
+          <div class="stat-num">11</div>
+          <div class="stat-label">Clusters</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">33</div>
+          <div class="stat-label">Max Fighters</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">3</div>
+          <div class="stat-label">Worlds</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">∞</div>
+          <div class="stat-label">Stakes</div>
+        </div>
+      </div>
+      <h3 style="margin-top:2rem">Disciplines</h3>
+      <ul class="rule-list" style="margin-top:1rem">
+        <li><span class="rule-icon">🥊</span><span><strong>1v1</strong> — The foundation. One on one. No mercy.</span></li>
+        <li><span class="rule-icon">🔄</span><span><strong>TAG</strong> — Team battle. Switch fighters mid-combat.</span></li>
+        <li><span class="rule-icon">🤝</span><span><strong>2v2 Alliance</strong> — Clusters unite. Temporary alliances, permanent consequences.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- GAMEPLAY -->
+<section class="fade-in" id="gameplay">
+  <div class="section-title">Gameplay</div>
+  <div class="section-line"></div>
+  <p class="section-desc">A physics-driven 3D fighting game where the body fights back. No memorizing infinite combos — manage your fighter's resources, read your opponent, and survive.</p>
+  <div class="world-grid">
+    <div class="world-card">
+      <div class="card-icon">🦴</div>
+      <h3>Physics Leads the Body</h3>
+      <p>Animation doesn't control combat — physics does. Every strike is a physical action with real consequences: force, velocity, impact, and recoil. The body responds to what happens to it, not to a preset script. Procedural animation driven by simulation.</p>
+    </div>
+    <div class="world-card">
+      <div class="card-icon">💔</div>
+      <h3>Body Part Damage System</h3>
+      <p>Every body part tracks its own state: shock (instant, fades), pain (medium duration), fatigue (accumulates slowly), wounds (bleeding, won't heal on its own), fractures (permanent debuff). A damaged arm drags down your whole game — punches cost more stamina, speed drops, trajectory degrades.</p>
+    </div>
+    <div class="world-card">
+      <div class="card-icon">🫁</div>
+      <h3>Stamina Is Everything</h3>
+      <p>Global stamina pool governs your entire fighter. The 100th kick is not the 1st kick — speed drops, force weakens, cooldown increases, trajectory becomes unreliable. You don't mash buttons. You invest resources. Push too hard and you're forced to block, retreat, or look for a counter-attack.</p>
+    </div>
+    <div class="world-card">
+      <div class="card-icon">💀</div>
+      <h3>One Hit Can End It All</h3>
+      <p>A single well-placed strike can end the fight. But even "safe" hits have a price. The opponent's hurt arm means they'll compensate with their legs — hitting harder but slower. Read the body language. Exploit the weakness. Or exhaust yourself trying.</p>
+    </div>
+    <div class="world-card">
+      <div class="card-icon">💪</div>
+      <h3>Charged Strikes</h3>
+      <p>Hold the button to charge — but the cost scales with power. Each fighter has unique stats: strength, speed, stamina, recovery, strike cost. A heavy brawler charges differently from a fast technical fighter. Know your fighter. Know your limits.</p>
+    </div>
+    <div class="world-card">
+      <div class="card-icon">🎨</div>
+      <h3>3D Cel-Shaded Aesthetic</h3>
+      <p>Full 3D characters on a 2.5D plane — like Tekken meets MK1-3 in three dimensions. Cel-shading, post-processing, dense atmospheric effects. Each cluster brings its own visual identity: arenas, fighters, VFX. The future looks sharp.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- DEVLOG -->
+<section class="fade-in" id="devlog">
+  <div class="section-title">Devlog</div>
+  <div class="section-line"></div>
+  <p class="section-desc">Building FET in Unity 6 with MCP-driven AI workflows. Real progress, real screenshots, real physics.</p>
+  <div class="tournament-layout">
+    <div class="tournament-main">
+      <h3>Latest Progress</h3>
+      <ul class="rule-list">
+        <li><span class="rule-icon">✅</span><span><strong>Fighter Models</strong> — Axel character imported with full skeletal rig (Hips → Spine → Arms, Legs, Head). Two instances on arena.</span></li>
+        <li><span class="rule-icon">✅</span><span><strong>Arena Prototype</strong> — Floor, walls, pillars, directional light, post-processing volume (bloom, color adjustments, vignette). Base structure done.</span></li>
+        <li><span class="rule-icon">✅</span><span><strong>Cel-Shading Shader</strong> — Custom HLSL shader for toon rendering. Ready to apply to fighters.</span></li>
+        <li><span class="rule-icon">✅</span><span><strong>Unity MCP Bridge</strong> — 51 AI tools connected via Model Context Protocol. AI controls the editor directly — place objects, modify materials, capture screenshots.</span></li>
+        <li><span class="rule-icon">✅</span><span><strong>Editor Script System</strong> — FET menu in Unity: Build Arena, Place Axel, Apply Shaders, Enhance Arena, Setup Camera. One-click scene construction.</span></li>
+        <li><span class="rule-icon">🔧</span><span><strong>In Progress</strong> — Character textures, camera system (fighting view), arena detail pass, VFX (fog, particles, neon). Physics combat system design complete.</span></li>
+        <li><span class="rule-icon">📋</span><span><strong>Next</strong> — Fighter textures & materials, fighting camera, arena atmosphere, then the core physics combat system.</span></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Tech Stack</h3>
+      <div class="tournament-stats">
+        <div class="stat-card">
+          <div class="stat-num" style="font-size:1rem">Unity 6</div>
+          <div class="stat-label">Engine</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" style="font-size:1rem">URP</div>
+          <div class="stat-label">Render</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" style="font-size:1rem">MCP</div>
+          <div class="stat-label">AI Control</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" style="font-size:1rem">C#</div>
+          <div class="stat-label">Code</div>
+        </div>
+      </div>
+      <div style="margin-top:2rem;border-radius:12px;overflow:hidden;border:1px solid var(--border)">
+        <img src="assets/arena_preview.png" alt="FET Arena Preview" style="width:100%;display:block;opacity:0.85">
+      </div>
+      <p style="color:#555;font-size:0.75rem;margin-top:0.5rem;text-align:center">Arena prototype — Axel fighters with skeletal rig, post-processing, directional light</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p><span>F.E.T.</span> — Fighting Evolution Tournament &nbsp;|&nbsp; Concept &copy; 2026 &nbsp;|&nbsp; All clusters. All systems. All arenas. One Champion!</p>
+</footer>
+
+<script>
+// Intersection Observer for fade-in
+const obs=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})
+},{threshold:0.1});
+document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
+
+// Parallax on hero
+document.addEventListener('mousemove',(e)=>{
+  const h=document.querySelector('.hero');
+  if(!h)return;
+  const x=(e.clientX/window.innerWidth-0.5)*10;
+  const y=(e.clientY/window.innerHeight-0.5)*10;
+  h.style.background=`radial-gradient(ellipse at ${50+x}% ${50+y}%,rgba(255,0,0,0.03),transparent 60%)`;
+});
+</script>
+</body>
+</html>

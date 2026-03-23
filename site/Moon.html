@@ -1,0 +1,47 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>FET - Moon</title><style>*{margin:0;padding:0}body{background:#000;overflow:hidden}canvas{display:block;cursor:grab}canvas:active{cursor:grabbing}</style></head><body><canvas id="c"></canvas><script>
+var cv=document.getElementById("c"),cx=cv.getContext("2d");
+var sc=1,ox=0,oy=0,isP=false,lx=0,ly=0;
+var MR=860;
+function resize(){cv.width=window.innerWidth;cv.height=window.innerHeight;render()}
+// Two halves: near side (left) and far side (right)
+var halves=[
+  {c:"#4B0082",n:"1STp",start:Math.PI/2,end:Math.PI*3/2},
+  {c:"#888888",n:"New Moon",start:-Math.PI/2,end:Math.PI/2}
+];
+function render(){
+  var W=cv.width,H=cv.height;
+  cx.fillStyle="#000";
+  cx.fillRect(0,0,W,H);
+  cx.save();
+  cx.translate(ox,oy);
+  cx.scale(sc,sc);
+  for(var i=0;i<halves.length;i++){
+    var h=halves[i];
+    cx.beginPath();
+    cx.arc(MR,MR,MR,h.start,h.end);
+    cx.closePath();
+    cx.fillStyle=h.c;
+    cx.fill();
+  }
+  // Edge
+  cx.beginPath();cx.arc(MR,MR,MR+1,0,Math.PI*2);cx.strokeStyle="rgba(255,255,255,0.1)";cx.lineWidth=1;cx.stroke();
+  // Divider
+  cx.beginPath();cx.moveTo(MR,0);cx.lineTo(MR,MR*2);cx.strokeStyle="rgba(255,255,255,0.15)";cx.lineWidth=1;cx.stroke();
+  // Labels
+  var fs=Math.max(16,Math.min(60,40/sc));
+  cx.font="900 "+fs+"px 'Arial Black',Arial,sans-serif";
+  cx.textAlign="center";cx.textBaseline="middle";
+  cx.fillStyle="rgba(0,0,0,0.7)";cx.fillText(halves[0].n.toUpperCase(),MR/2+1,MR+1);cx.fillStyle="#fff";cx.fillText(halves[0].n.toUpperCase(),MR/2,MR);
+  cx.fillStyle="rgba(0,0,0,0.7)";cx.fillText(halves[1].n.toUpperCase(),MR*1.5+1,MR+1);cx.fillStyle="#fff";cx.fillText(halves[1].n.toUpperCase(),MR*1.5,MR);
+  cx.restore();
+}
+cv.addEventListener("wheel",function(e){e.preventDefault();var r=cv.getBoundingClientRect(),mx=e.clientX-r.left,my=e.clientY-r.top,os=sc;sc*=e.deltaY<0?1.15:1/1.15;sc=Math.max(0.2,Math.min(10,sc));ox=mx-(mx-ox)*(sc/os);oy=my-(my-oy)*(sc/os);render()});
+cv.addEventListener("mousedown",function(e){isP=true;lx=e.clientX;ly=e.clientY});
+cv.addEventListener("mousemove",function(e){if(!isP)return;ox+=e.clientX-lx;oy+=e.clientY-ly;lx=e.clientX;ly=e.clientY;render()});
+cv.addEventListener("mouseup",function(){isP=false});
+window.addEventListener("resize",resize);
+resize();
+ox=cv.width/2-MR*sc;
+oy=cv.height/2-MR*sc;
+render();
+</script></body></html>
