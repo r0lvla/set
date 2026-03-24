@@ -295,34 +295,93 @@ footer span{color:#555}
   <p class="section-desc">A physics-driven 3D fighting game where the body fights back. No memorizing infinite combos — manage your fighter's resources, read your opponent, and survive.</p>
   <div class="world-grid">
     <div class="world-card">
+      <div class="card-icon">🧠</div>
+      <h3>AI-Driven Animation</h3>
+      <p>When you press a button, that's not a command — it's an <strong>intention</strong>. The fighter's neural network evaluates their current physical state (balance, weight distribution, limb positions) and <strong>attempts</strong> to execute the move through real physics. A low kick after a jab means the body needs to recover first. No two strikes are ever identical.</p>
+    </div>
+    <div class="world-card">
+      <div class="card-icon">⚡</div>
+      <h3>State-Dependent Execution</h3>
+      <p>Fighter in the air? The kick waits. Just got hit? The punch is sloppy. Exhausted? Everything slows down. The body's physical state determines what's possible <strong>right now</strong> — not what the animation script says. This creates emergent, realistic combat where reading body language becomes the core skill.</p>
+    </div>
+    <div class="world-card">
       <div class="card-icon">🦴</div>
       <h3>Physics Leads the Body</h3>
-      <p>Animation doesn't control combat — physics does. Every strike is a physical action with real consequences: force, velocity, impact, and recoil. The body responds to what happens to it, not to a preset script. Procedural animation driven by simulation.</p>
+      <p>Animation doesn't control combat — physics does. Every strike is a physical action with real consequences: force, velocity, impact, and recoil. The body responds to what happens to it, not to a preset script. Procedural animation driven by simulation via Unity ML-Agents + ArticulationBody.</p>
+    </div>
+    <div class="world-card">
+      <div class="card-icon">💪</div>
+      <h3>Mastery System</h3>
+      <p>Every skill has a training level. 10 episodes = sloppy, falls often. 100 = confident but slow. 10,000 = automatic, fast, technically perfect. This creates <strong>fighter personality</strong> — one dominates with hands, another with legs. Your fighter grows uniquely based on how you train them.</p>
     </div>
     <div class="world-card">
       <div class="card-icon">💔</div>
-      <h3>Body Part Damage System</h3>
-      <p>Every body part tracks its own state: shock (instant, fades), pain (medium duration), fatigue (accumulates slowly), wounds (bleeding, won't heal on its own), fractures (permanent debuff). A damaged arm drags down your whole game — punches cost more stamina, speed drops, trajectory degrades.</p>
-    </div>
-    <div class="world-card">
-      <div class="card-icon">🫁</div>
-      <h3>Stamina Is Everything</h3>
-      <p>Global stamina pool governs your entire fighter. The 100th kick is not the 1st kick — speed drops, force weakens, cooldown increases, trajectory becomes unreliable. You don't mash buttons. You invest resources. Push too hard and you're forced to block, retreat, or look for a counter-attack.</p>
+      <h3>Body Part Damage</h3>
+      <p>Every body part tracks its own state: shock, pain, fatigue, wounds, fractures. A damaged arm drags down your whole game — punches cost more stamina, speed drops, trajectory degrades. The opponent compensates with healthy limbs — hitting harder but slower. Read the body. Exploit the weakness.</p>
     </div>
     <div class="world-card">
       <div class="card-icon">💀</div>
       <h3>One Hit Can End It All</h3>
-      <p>A single well-placed strike can end the fight. But even "safe" hits have a price. The opponent's hurt arm means they'll compensate with their legs — hitting harder but slower. Read the body language. Exploit the weakness. Or exhaust yourself trying.</p>
-    </div>
-    <div class="world-card">
-      <div class="card-icon">💪</div>
-      <h3>Charged Strikes</h3>
-      <p>Hold the button to charge — but the cost scales with power. Each fighter has unique stats: strength, speed, stamina, recovery, strike cost. A heavy brawler charges differently from a fast technical fighter. Know your fighter. Know your limits.</p>
+      <p>A single well-placed strike can end the fight. But even "safe" hits have a price. You don't mash buttons — you invest resources. Push too hard and you're forced to block, retreat, or look for a counter-attack. The 100th kick is not the 1st kick.</p>
     </div>
     <div class="world-card">
       <div class="card-icon">🎨</div>
       <h3>3D Cel-Shaded Aesthetic</h3>
-      <p>Full 3D characters on a 2.5D plane — like Tekken meets MK1-3 in three dimensions. Cel-shading, post-processing, dense atmospheric effects. Each cluster brings its own visual identity: arenas, fighters, VFX. The future looks sharp.</p>
+      <p>Full 3D characters on a 2.5D plane — like Tekken meets MK1-3 in three dimensions. Custom cel-shading with vertex snapping, 2-step shadows, post-processing. Each cluster brings its own visual identity. 4K. Dense atmospheric effects. The future looks sharp.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- AI ANIMATION -->
+<section class="fade-in" id="ai-animation">
+  <div class="section-title">Neural Combat</div>
+  <div class="section-line"></div>
+  <p class="section-desc">Fighters don't play animations — they learn movements. Each fighter is a neural network controlling a physical body through reinforcement learning.</p>
+  <div class="tournament-layout">
+    <div class="tournament-main">
+      <h3>How It Works</h3>
+      <ul class="rule-list">
+        <li><span class="rule-icon">🎯</span><span><strong>Reference Motion</strong> — Give the fighter a mocap recording of a perfect technique (e.g., a real Muay Thai low kick). The neural network learns to reproduce it through physics — not by playing frames, but by controlling muscles.</span></li>
+        <li><span class="rule-icon">🔄</span><span><strong>Imitation Learning</strong> — Behavioral Cloning via Unity ML-Agents. The network studies the reference and learns the mapping: "given this body state, apply these forces to get closer to the reference pose." Every execution is slightly different because it's real physics.</span></li>
+        <li><span class="rule-icon">⚖️</span><span><strong>Physics Body</strong> — 26 degrees of freedom (hips, spine, chest, head, thighs, shins, feet, arms, forearms, hands). Each joint is an ArticulationBody with torque limits. Gravity is real. Balance is earned, not scripted.</span></li>
+        <li><span class="rule-icon">🚫</span><span><strong>Action Masking</strong> — The system knows what's physically impossible right now. Can't low-kick while airborne? The action is masked. This prevents impossible inputs and creates realistic recovery windows.</span></li>
+        <li><span class="rule-icon">🤖</span><span><strong>Self-Play</strong> — Two fighters train against each other. They develop unique adaptive strategies, counters, and tendencies. No scripted AI behavior — pure emergent combat intelligence.</span></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Combat Flow Example</h3>
+      <div style="padding:1.5rem;background:var(--card);border:1px solid var(--border);border-radius:8px;font-family:monospace;font-size:0.85rem;color:#888;line-height:2">
+        <div style="color:#ff4444">[INPUT] Player presses: LOW KICK (right)</div>
+        <div style="color:#ffd60a">[STATE] Axel: just threw jab, weight on front foot</div>
+        <div style="color:#00c655">[EVAL] 50ms — assessing body state...</div>
+        <div style="color:#00c655">[EVAL] Kick possible but delayed</div>
+        <div style="color:#888">[PHYS] 200ms — weight shift to rear leg</div>
+        <div style="color:#888">[PHYS] 150ms — hip rotation + chamber</div>
+        <div style="color:#ff4444">[PHYS] 100ms — STRIKE (shin to target)</div>
+        <div style="color:#888">[PHYS] 300ms — balance recovery</div>
+        <div style="color:#555;padding-top:0.5rem">Total: ~800ms (vs 200ms in traditional games)</div>
+      </div>
+      <h3 style="margin-top:1.5rem">Tech Stack</h3>
+      <div class="tournament-stats">
+        <div class="stat-card">
+          <div class="stat-num" style="font-size:0.85rem">ML-Agents 4</div>
+          <div class="stat-label">Training</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" style="font-size:0.85rem">PPO + BC</div>
+          <div class="stat-label">Algorithms</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" style="font-size:0.85rem">ONNX</div>
+          <div class="stat-label">Inference</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" style="font-size:0.85rem">26 DOF</div>
+          <div class="stat-label">Body</div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -436,13 +495,13 @@ footer span{color:#555}
     <div class="tournament-main">
       <h3>Latest Progress</h3>
       <ul class="rule-list">
-        <li><span class="rule-icon">✅</span><span><strong>Fighter Models</strong> — Axel character imported with full skeletal rig (Hips → Spine → Arms, Legs, Head). Two instances on arena.</span></li>
-        <li><span class="rule-icon">✅</span><span><strong>Arena Prototype</strong> — Floor, walls, pillars, directional light, post-processing volume (bloom, color adjustments, vignette). Base structure done.</span></li>
-        <li><span class="rule-icon">✅</span><span><strong>Cel-Shading Shader</strong> — Custom HLSL shader for toon rendering. Ready to apply to fighters.</span></li>
-        <li><span class="rule-icon">✅</span><span><strong>Unity MCP Bridge</strong> — 51 AI tools connected via Model Context Protocol. AI controls the editor directly — place objects, modify materials, capture screenshots.</span></li>
-        <li><span class="rule-icon">✅</span><span><strong>Editor Script System</strong> — SET menu in Unity: Build Arena, Place Axel, Apply Shaders, Enhance Arena, Setup Camera. One-click scene construction.</span></li>
-        <li><span class="rule-icon">🔧</span><span><strong>In Progress</strong> — Character textures, camera system (fighting view), arena detail pass, VFX (fog, particles, neon). Physics combat system design complete.</span></li>
-        <li><span class="rule-icon">📋</span><span><strong>Next</strong> — Fighter textures & materials, fighting camera, arena atmosphere, then the core physics combat system.</span></li>
+        <li><span class="rule-icon">🧠</span><span><strong>AI Animation Architecture</strong> — Neural combat system designed. Fighters learn movements via ML-Agents 4.0 (PPO + Behavioral Cloning). 26 DOF physics body. State-dependent execution, mastery system, action masking. Reference mocap → physics-driven reproduction.</span></li>
+        <li><span class="rule-icon">✅</span><span><strong>Fighter Models</strong> — Axel character imported with full skeletal rig (Hips → Spine → Arms, Legs, Head). Two instances on arena with cel-shading.</span></li>
+        <li><span class="rule-icon">✅</span><span><strong>Arena Prototype</strong> — 20×20m floor with grid texture, walls, pillars, directional light, post-processing (bloom, color adjustments, vignette).</span></li>
+        <li><span class="rule-icon">✅</span><span><strong>Cel-Shading Shader</strong> — Custom SET_CelSimple: vertex+UV snapping (pixel art feel), 2-step shadow, PixelSize=14, ShadowMult=0.15.</span></li>
+        <li><span class="rule-icon">✅</span><span><strong>Fighting Camera</strong> — SETCameraController: dynamic FOV zoom (18°-45°), fighter follow, arena bounds, dramatic close-up on approach.</span></li>
+        <li><span class="rule-icon">✅</span><span><strong>Unity MCP Bridge</strong> — 51 AI tools connected via mcporter/relay_win.exe. AI controls editor directly.</span></li>
+        <li><span class="rule-icon">🔧</span><span><strong>Next</strong> — Blender cleanup Axel → Mixamo rig → ML-Agents physics body → first trained skill (balance/walking).</span></li>
       </ul>
     </div>
     <div>
@@ -457,18 +516,18 @@ footer span{color:#555}
           <div class="stat-label">Render</div>
         </div>
         <div class="stat-card">
-          <div class="stat-num" style="font-size:1rem">MCP</div>
-          <div class="stat-label">AI Control</div>
+          <div class="stat-num" style="font-size:1rem">ML-Agents</div>
+          <div class="stat-label">AI Training</div>
         </div>
         <div class="stat-card">
-          <div class="stat-num" style="font-size:1rem">C#</div>
-          <div class="stat-label">Code</div>
+          <div class="stat-num" style="font-size:1rem">ONNX</div>
+          <div class="stat-label">Inference</div>
         </div>
       </div>
       <div style="margin-top:2rem;border-radius:12px;overflow:hidden;border:1px solid var(--border)">
         <img src="assets/arena_preview.png" alt="SET Arena Preview" style="width:100%;display:block;opacity:0.85">
       </div>
-      <p style="color:#555;font-size:0.75rem;margin-top:0.5rem;text-align:center">Arena prototype — Axel fighters with skeletal rig, post-processing, directional light</p>
+      <p style="color:#555;font-size:0.75rem;margin-top:0.5rem;text-align:center">Arena prototype — Cel-shaded Axel, grid floor, post-processing, fighting camera</p>
     </div>
   </div>
 </section>
